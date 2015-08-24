@@ -27,8 +27,9 @@ COMMENT2={WHITE_SPACE}+ {COMMENT1}
 
 DIRECTORY={WHITE_SPACE}* "\\"[dl] {WHITE_SPACE}+ [._a-zA-Z0-9]+ ({WHITE_SPACE}|{NEWLINE})+
 IDENTIFIER=[.a-zA-Z][._a-zA-Z0-9]*
-IDENTIFIER_SYS="_" [._a-zA-Z0-9]*|[0-6] ":"
-ID={IDENTIFIER}|{IDENTIFIER_SYS}
+IDENTIFIER_SYS="_" [._a-zA-Z0-9]*
+N_COLON=[0-6] ":"
+ID={IDENTIFIER}|{IDENTIFIER_SYS} //|{N_COLON}
 ID_START=[_.][a-zA-Z]
 
 NUMBER=-?((0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]*)?|0[iInN])
@@ -42,12 +43,16 @@ VERB=[!#$%&*+,-.<=>?@\^_|~]
 ADVERB="/" | "/:" | "\\" | "\\:" | "'" | "':"
 
 // function composition
-COMPOSED_MONAD=({VERB}{WHITE_SPACE}*)+ ":"
-COMPOSED_MONAD2={DERIVED_VERB}{COMPOSED_MONAD}
+COMPOSED_MONAD=({COMPLEX1}{WHITE_SPACE}*)*({VERB}{WHITE_SPACE}*)+":"
+COMPLEX1=({IDENTIFIER_SYS}|{N_COLON}|{VERB}){ADVERB}*
+COMPLEX2=({IDENTIFIER_SYS}|{N_COLON}|{VERB}|{IDENTIFIER}){ADVERB}*
+COMPLEX3=({IDENTIFIER_SYS}|{N_COLON}|{VERB}|{IDENTIFIER})":"?{ADVERB}
+COMPOSED_MONAD2=(({VERB}{WHITE_SPACE}*)":")?
+//COMPOSED_MONAD2={DERIVED_VERB}{COMPOSED_MONAD}
 
 // higher-order functions
-DERIVED_VERB=({ID}|({VERB}":"?))+{ADVERB}+
-DERIVED_VERB2={DERIVED_VERB}?{COMPOSED_MONAD}{ADVERB}+
+DERIVED_VERB=({COMPLEX2}{WHITE_SPACE}*)*{COMPLEX3}
+//DERIVED_VERB2={DERIVED_VERB}?{COMPOSED_MONAD}{ADVERB}+
 
 // Is Next Minus Token a Dyad
 %state MINUS
@@ -73,13 +78,14 @@ DERIVED_VERB2={DERIVED_VERB}?{COMPOSED_MONAD}{ADVERB}+
   {NEWLINE}+                   { return NEWLINE; }
   ^{DIRECTORY}                 { return DIRECTORY; }
   {NUMBER_VECTOR}              { return NUMBER_VECTOR; }
+  {N_COLON}/[^\[]              { return N_COLON; }
   ":"/"["                      { return COLON; }
   "if"/"["                     { return IF; }
   "do"/"["                     { return DO; }
   "while"/"["                  { return WHILE; }
   {ADVERB}/"["                 { return ADVERB; }
-  {DERIVED_VERB2}              { return DERIVED_VERB; }
-  {COMPOSED_MONAD2}/[^\[]      { return COMPOSED_MONAD; }
+//  {DERIVED_VERB2}              { return DERIVED_VERB; }
+//  {COMPOSED_MONAD2}/[^\[]      { return COMPOSED_MONAD; }
   {DERIVED_VERB}               { return DERIVED_VERB; }
   {COMPOSED_MONAD}/[^\[]       { return COMPOSED_MONAD; }
   {SYMBOL_VECTOR}/{LINE_WS}"/" { return SYMBOL_VECTOR; }
