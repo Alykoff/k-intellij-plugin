@@ -1,7 +1,7 @@
 out/
 gen/
 lib/
-.idea/
+.idea/*
 !.idea/qlang-intellij-plugin.iml
 !.idea/modules.xml
 !.idea/libraries/*.xml
