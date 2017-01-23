@@ -3,6 +3,8 @@
 This plugin that will be support q lang (kdb+) in idea.
 
 The plugin is based on [k idea plugin](https://github.com/a2ndrade/k-intellij-plugin) by @a2ndrade
+and
+[kdb atom plugin](https://github.com/quintanar401/language-kdb-q).
 
 ### Q references
 

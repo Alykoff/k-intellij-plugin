@@ -5,6 +5,9 @@ lib/
 !.idea/qlang-intellij-plugin.iml
 !.idea/modules.xml
 !.idea/libraries/*.xml
+*.zip
+ant_tasks.properties
+ant_tasks.xml
 
 KLexer.java
 QLexer.java
