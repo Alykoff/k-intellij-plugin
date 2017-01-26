@@ -45,14 +45,15 @@ STAMP=((\d+D|\d\d\d\d\.[01]\d\.[0123]\d[DT])([012]\d\:[0-5]\d(\:[0-5]\d(\.\d+)?)
 FUNC=(first|enlist|value|type|get|set|count|string|key|max|min|sum|prd|last|flip|distinct|raze|neg|
            til|upper|lower|abs|acos|aj|aj0|not|null|any|asc|asin|attr|avg|avgs|ceiling|cols|cos|csv|all|atan|deltas|
            desc|differ|dsave|dev|eval|exit|exp|fills|fkeys|floor|getenv|group|gtime|hclose|hcount|hdel|hopen|hsym|
-           iasc|idesc|inv|keys|load|log|lsq|ltime|ltrim|maxs|md5|meta|mins|next|parse|plist|prds|prev|rand|rank|ratios|
+           iasc|idesc|inv|keys|load|log|lsq|ltime|ltrim|maxs|md5|meta|mins|next|parse|prds|prev|rand|rank|ratios|
            read0|read1|reciprocal|reverse|rload|rotate|rsave|rtrim|save|sdev|show|signum|sin|sqrt|ssr|sums|svar|system|
-           tables|tan|trim|txf|ungroup|var|view|views|wj|wj1|ww)
-
+           tables|tan|trim|ungroup|var|view|views|wj|wj1|ww|ema)
+DEPRECATED_FUNC=(txf|plist)
 NIL=0[nNwW][hijefcpmdznuvt]
-KEYWORD=(and|or|except|inter|like|each|cross|vs|sv|within|where|in|asof|bin|binr|cor|cov|cut|ej|fby|
-              div|ij|insert|lj|ljf|mavg|mcount|mdev|med|mmax|mmin|mmu|mod|msum|over|prior|peach|pj|scan|scov|setenv|ss|
-              sublist|uj|union|upsert|wavg|wsum|xasc|xbar|xcol|xcols|xdesc|xexp|xgroup|xkey|xlog|xprev|xrank)
+KEYWORD=(and|or|except|inter|like|each|cross|vs|sv|within|in|asof|bin|binr|cor|cov|cut|ej|fby|
+              div|ij|lj|ljf|mavg|mcount|mdev|med|mmax|mmin|mmu|mod|msum|over|prior|peach|pj|scan|scov|setenv|ss|
+              sublist|uj|union|upsert|wavg|wsum|xasc|xbar|xcol|xcols|xdesc|xexp|xgroup|xkey|xlog|xprev|xrank|exec|select
+              |delete|update|insert|from|where|by)
 
 
 NUMBER=-?((0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]*)?|0[iInN])
@@ -129,6 +130,9 @@ DERIVED_VERB=({ID}|(({VERB}|{N_COLON})":"?)){ADVERB}+
   {DATE}                       { return NUMBER; }
   {TIME}                       { return NUMBER; }
   {STAMP}                      { return NUMBER; }
+  {FUNC}                       { return VERB; }
+  {NIL}                        { return NUMBER; }
+  {KEYWORD}                    { return VERB; }
 
   "("                          { return OPEN_PAREN; }
   ")"/{ADVERB}                 { yybegin(DERIVED_LAMBDA); return CLOSE_PAREN; }
